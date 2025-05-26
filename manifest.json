@@ -1,0 +1,9 @@
+{
+    "manifest_version": 3,
+    "name": "Claude Memory Extension",
+    "version": "1.0",
+    "description": "Summarize Claude conversations into personalized memory.",
+    "host_permissions": [
+        "https://claude.ai/*"
+    ]
+}
