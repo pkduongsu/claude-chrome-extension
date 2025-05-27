@@ -1,4 +1,4 @@
-// Simple Memory Button Test for Claude UI
+// Simple Memory Button Test for Claude UI - Tailwind Version
 class MemoryButtonTest {
   constructor() {
     this.isInitialized = false;
@@ -13,7 +13,6 @@ class MemoryButtonTest {
     if (this.isInitialized) return;
     console.log('🧠 Memory Button Test: Initializing...');
     
-    this.injectMemoryStyles();
     this.waitForClaudeUI();
     this.isInitialized = true;
   }
@@ -35,307 +34,271 @@ class MemoryButtonTest {
   }
 
   injectMemoryButton() {
-    console.log('🔍 Looking for Projects button...');
-    
-    // Find the Projects link in the sidebar
-    const projectsLink = document.querySelector('a[aria-label="Projects"]');
-    
-    if (!projectsLink) {
-      console.log('❌ Projects button not found, retrying...');
-      setTimeout(() => this.injectMemoryButton(), 2000);
-      return;
-    }
-
-    console.log('✅ Projects button found:', projectsLink);
-
-    // Get the parent container (the sidebar group)
-    const sidebarContainer = projectsLink.closest('.relative.group');
-    if (!sidebarContainer || !sidebarContainer.parentElement) {
-      console.log('❌ Sidebar container not found');
-      return;
-    }
-
-    console.log('✅ Sidebar container found, creating Memory button...');
-
-    // Insert Memory button after the Projects container
-    this.createMemoryButton(sidebarContainer.parentElement, sidebarContainer);
+  console.log('🔍 Looking for Projects button...');
+  
+  // Find the Projects link in the sidebar
+  const projectsLink = document.querySelector('a[aria-label="Projects"]');
+  
+  if (!projectsLink) {
+    console.log('❌ Projects button not found, retrying...');
+    setTimeout(() => this.injectMemoryButton(), 2000);
+    return;
   }
 
-  createMemoryButton(container, insertAfter) {
-    // Remove existing button if present
-    const existing = document.getElementById('claude-memory-button');
-    if (existing) {
-      console.log('🔄 Removing existing Memory button...');
-      existing.remove();
-    }
+  console.log('✅ Projects button found:', projectsLink);
 
-    // Create the same structure as Projects button
-    const memoryContainer = document.createElement('div');
-    memoryContainer.className = 'relative group';
-    memoryContainer.setAttribute('data-state', 'closed');
-    memoryContainer.id = 'claude-memory-container';
+  // Get the Projects container (the .relative.group div)
+  const projectsContainer = projectsLink.closest('.relative.group');
+  if (!projectsContainer || !projectsContainer.parentElement) {
+    console.log('❌ Projects container not found');
+    return;
+  }
 
-    const memoryLink = document.createElement('a');
-    memoryLink.id = 'claude-memory-button';
-    memoryLink.href = '#';
-    memoryLink.setAttribute('aria-label', 'Memory');
-    
-    // Copy the exact classes from Projects link
-    memoryLink.className = `inline-flex
-      items-center
-      justify-center
-      relative
-      shrink-0
-      can-focus
-      select-none
-      disabled:pointer-events-none
-      disabled:opacity-50
-      disabled:shadow-none
-      disabled:drop-shadow-none text-text-300
-      border-transparent
-      transition
-      font-styrene
-      duration-300
-      ease-[cubic-bezier(0.165,0.85,0.45,1)]
-      hover:bg-bg-400
-      aria-pressed:bg-bg-400
-      aria-checked:bg-bg-400
-      aria-expanded:bg-bg-300
-      hover:text-text-100
-      aria-pressed:text-text-100
-      aria-checked:text-text-100
-      aria-expanded:text-text-100 h-9 px-4 py-2 rounded-lg min-w-[5rem] active:scale-[0.99] px-4 w-full hover:bg-bg-300 overflow-hidden min-w-0 group active:bg-bg-400 active:scale-[0.99]`.replace(/\s+/g, ' ').trim();
+  console.log('✅ Projects container found, creating Memory button at same level...');
 
-    // Add the memory icon and text
-    memoryLink.innerHTML = `
-      <span class="whitespace-nowrap text-sm w-full">
-        🧠 Memory
+  // Insert Memory button at the SAME LEVEL as Projects (not underneath)
+  // This will place it as a sibling to the Projects container
+  this.createMemoryButton(projectsContainer.parentElement, projectsContainer);
+}
+
+createMemoryButton(container, insertAfter) {
+  // Remove existing button if present
+  const existing = document.getElementById('claude-memory-container');
+  if (existing) {
+    console.log('🔄 Removing existing Memory button...');
+    existing.remove();
+  }
+
+  // Create the EXACT same structure as Projects - separate container
+  const memoryContainer = document.createElement('div');
+  memoryContainer.className = 'relative group-memory'; // Changed from 'group' to 'group-memory'
+  memoryContainer.setAttribute('data-state', 'closed');
+  memoryContainer.id = 'claude-memory-container';
+
+  const memoryLink = document.createElement('a');
+  memoryLink.id = 'claude-memory-button';
+  memoryLink.href = '#';
+  memoryLink.setAttribute('target', '_self');
+  memoryLink.setAttribute('aria-label', 'Memory');
+  
+  // Copy the EXACT same classes as Projects button, but replace 'group' with 'group-memory'
+  memoryLink.className = `inline-flex
+    items-center
+    justify-center
+    relative
+    shrink-0
+    can-focus
+    select-none
+    disabled:pointer-events-none
+    disabled:opacity-50
+    disabled:shadow-none
+    disabled:drop-shadow-none text-text-300
+    border-transparent
+    transition
+    font-styrene
+    duration-300
+    ease-[cubic-bezier(0.165,0.85,0.45,1)]
+    hover:bg-bg-400
+    aria-pressed:bg-bg-400
+    aria-checked:bg-bg-400
+    aria-expanded:bg-bg-300
+    hover:text-text-100
+    aria-pressed:text-text-100
+    aria-checked:text-text-100
+    aria-expanded:text-text-100 h-9 px-4 py-2 rounded-lg min-w-[5rem] active:scale-[0.985] whitespace-nowrap text-sm w-full hover:bg-bg-300 overflow-hidden !min-w-0 group-memory active:bg-bg-400 active:scale-[0.99] px-4`.replace(/\s+/g, ' ').trim();
+
+  // Use the same structure but with group-memory classes
+  memoryLink.innerHTML = `
+    <div class="-translate-x-2 w-full flex flex-row items-center justify-start gap-3">
+      <div class="size-4 flex items-center justify-center group-memory-hover:!text-text-200 text-text-400">
+        <svg width="18" height="18" viewBox="0 0 512 512" fill="currentColor" xmlns="http://www.w3.org/2000/svg" class="shrink-0 group-memory">
+          <path class="group-memory-hover:-translate-y-[0.5px] transition group-memory-active:translate-y-0" d="M184 0c30.9 0 56 25.1 56 56l0 400c0 30.9-25.1 56-56 56c-28.9 0-52.7-21.9-55.7-50.1c-5.2 1.4-10.7 2.1-16.3 2.1c-35.3 0-64-28.7-64-64c0-7.4 1.3-14.6 3.6-21.2C21.4 367.4 0 338.2 0 304c0-31.9 18.7-59.5 45.8-72.3C37.1 220.8 32 207 32 192c0-30.7 21.6-56.3 50.4-62.6C80.8 123.9 80 118 80 112c0-29.9 20.6-55.1 48.3-62.1C131.3 21.9 155.1 0 184 0zM328 0c28.9 0 52.6 21.9 55.7 49.9c27.8 7 48.3 32.1 48.3 62.1c0 6-.8 11.9-2.4 17.4c28.8 6.2 50.4 31.9 50.4 62.6c0 15-5.1 28.8-13.8 39.7C493.3 244.5 512 272.1 512 304c0 34.2-21.4 63.4-51.6 74.8c2.3 6.6 3.6 13.8 3.6 21.2c0 35.3-28.7 64-64 64c-5.6 0-11.1-.7-16.3-2.1c-3 28.2-26.8 50.1-55.7 50.1c-30.9 0-56-25.1-56-56l0-400c0-30.9 25.1-56 56-56z"/>
+        </svg>
+      </div>
+      <span class="truncate group-memory-hover:[mask-image:linear-gradient(to_right,hsl(var(--always-black))_78%,transparent_95%)] group-memory-focus-within:[mask-image:linear-gradient(to_right,hsl(var(--always-black))_78%,transparent_95%)] text-sm whitespace-nowrap w-full [mask-size:100%_100%]">
+        <div class="transition-all duration-200">Memory</div>
       </span>
-    `;
+    </div>
+  `;
 
-    // Add click handler
-    memoryLink.addEventListener('click', (e) => {
-      e.preventDefault();
-      console.log('🧠 Memory button clicked!');
-      this.toggleMemoryPanel();
-    });
+  // Add click handler
+  memoryLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    console.log('🧠 Memory button clicked!');
+    this.toggleMemoryPanel();
+  });
 
-    // Assemble the structure
-    memoryContainer.appendChild(memoryLink);
+  // Assemble the structure - same as Projects
+  memoryContainer.appendChild(memoryLink);
 
-    // Insert after Projects container
-    container.insertBefore(memoryContainer, insertAfter.nextSibling);
+  // Insert AFTER Projects container (as a sibling, not child)
+  container.insertBefore(memoryContainer, insertAfter.nextSibling);
+  
+  console.log('🎉 Memory button successfully created with isolated hover effects!');
+}
+
+injectMemoryStyles() {
+  if (document.getElementById('claude-memory-styles')) return;
+
+  console.log('🎨 Injecting Memory button styles...');
+
+  const styles = document.createElement('style');
+  styles.id = 'claude-memory-styles';
+  styles.textContent = `
+    /* Custom group classes for Memory button to avoid conflicts */
+    .group-memory:hover .group-memory-hover\\:!text-text-200 {
+      color: rgb(var(--text-200)) !important;
+    }
     
-    console.log('🎉 Memory button successfully created and inserted!');
-  }
+    .group-memory:hover .group-memory-hover\\:-translate-y-\\[0\\.5px\\] {
+      transform: translateY(-0.5px);
+    }
+    
+    .group-memory:active .group-memory-active\\:translate-y-0 {
+      transform: translateY(0px);
+    }
+    
+    .group-memory:hover .group-memory-hover\\:\\[mask-image\\:linear-gradient\\(to_right\\,hsl\\(var\\(--always-black\\)\\)_78\\%\\,transparent_95\\%\\)\\] {
+      mask-image: linear-gradient(to_right, hsl(var(--always-black)) 78%, transparent 95%);
+    }
+    
+    .group-memory:focus-within .group-memory-focus-within\\:\\[mask-image\\:linear-gradient\\(to_right\\,hsl\\(var(--always-black\\)\\)_78\\%\\,transparent_95\\%\\)\\] {
+      mask-image: linear-gradient(to_right, hsl(var(--always-black)) 78%, transparent 95%);
+    }
+  `;
 
-  toggleMemoryPanel() {
+  document.head.appendChild(styles);
+}
+
+    toggleMemoryPanel() {
     const existingPanel = document.getElementById('claude-memory-panel');
     
     if (existingPanel) {
-      console.log('🗑️ Closing Memory panel...');
-      existingPanel.remove();
-      return;
+        console.log('🗑️ Closing Memory panel...');
+        existingPanel.remove();
+        return;
     }
 
     console.log('📋 Opening Memory panel...');
     this.createMemoryPanel();
-  }
+    }
 
-  createMemoryPanel() {
+    createMemoryPanel() {
     const panel = document.createElement('div');
     panel.id = 'claude-memory-panel';
     
+    // Use standard CSS classes instead of Tailwind for better compatibility
+    panel.style.cssText = `
+        position: fixed;
+        right: 20px;
+        top: 80px;
+        width: 400px;
+        max-height: 600px;
+        background: white;
+        border: 1px solid #e5e5e5;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        z-index: 10000;
+        font-family: inherit;
+        overflow: hidden;
+        color: #333;
+    `;
+    
     panel.innerHTML = `
-      <div class="memory-panel-header">
-        <h3>🧠 Memory Manager</h3>
-        <button id="close-memory-panel">×</button>
-      </div>
-      <div class="memory-panel-content">
-        <div class="memory-stats">
-          <strong>${this.testMemories.length}</strong> test memories loaded
-          <br><small>This is a UI test - no real memories yet</small>
+        <div style="padding: 16px; border-bottom: 1px solid #e5e5e5; background: #f8f9fa; display: flex; justify-content: space-between; align-items: center;">
+        <h3 style="margin: 0; font-size: 16px; font-weight: 600; color: #333; display: flex; align-items: center; gap: 8px;">
+            <span>🧠</span>
+            <span>Memory Manager</span>
+        </h3>
+        <button 
+            id="close-memory-panel"
+            style="background: none; border: none; font-size: 20px; cursor: pointer; color: #666; padding: 4px 8px; border-radius: 6px; transition: background 0.2s ease;"
+            onmouseover="this.style.background='#f0f0f0'"
+            onmouseout="this.style.background='none'"
+        >×</button>
         </div>
-        <div class="memory-list">
-          ${this.testMemories.map(memory => `
-            <div class="memory-item">
-              <div class="memory-category">${memory.category}</div>
-              <div class="memory-content">${memory.content}</div>
-              <button onclick="window.memoryButtonTest.deleteTestMemory('${memory.id}')" class="delete-btn">Delete</button>
+        
+        <div style="padding: 16px; max-height: 500px; overflow-y: auto;">
+        <div style="margin-bottom: 16px; padding: 12px; background: #e3f2fd; border: 1px solid #bbdefb; border-radius: 8px;">
+            <div style="font-weight: 600; color: #1565c0; margin-bottom: 4px;">
+            ${this.testMemories.length} test memories loaded
             </div>
-          `).join('')}
+            <div style="font-size: 14px; color: #1976d2;">
+            This is a UI test - no real memories yet
+            </div>
         </div>
-        <div style="text-align: center; padding: 15px; border-top: 1px solid rgb(var(--border-400)); margin-top: 15px; color: rgb(var(--text-300));">
-          <small>✅ Memory Button UI Test Successful!</small>
+        
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+            ${this.testMemories.map(memory => `
+            <div style="padding: 12px; border: 1px solid #e5e5e5; border-radius: 8px; background: #f8f9fa; transition: background 0.2s ease;" 
+                onmouseover="this.style.background='#f0f0f0'" 
+                onmouseout="this.style.background='#f8f9fa'">
+                <div style="font-size: 11px; font-weight: 500; color: #666; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px;">
+                ${memory.category}
+                </div>
+                <div style="font-size: 14px; color: #333; margin-bottom: 12px; line-height: 1.5;">
+                ${memory.content}
+                </div>
+                <button 
+                onclick="window.memoryButtonTest.deleteTestMemory('${memory.id}')"
+                style="font-size: 12px; padding: 6px 12px; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 500; transition: background 0.2s ease;"
+                onmouseover="this.style.background='#dc2626'"
+                onmouseout="this.style.background='#ef4444'"
+                >
+                Delete
+                </button>
+            </div>
+            `).join('')}
         </div>
-      </div>
+        
+        <div style="text-align: center; padding: 15px; border-top: 1px solid #e5e5e5; margin-top: 15px;">
+            <div style="font-size: 14px; color: #666; display: flex; align-items: center; justify-content: center; gap: 8px;">
+            <span style="color: #10b981;">✓</span>
+            <span>Memory Button UI Test Successful!</span>
+            </div>
+        </div>
+        </div>
     `;
 
     document.body.appendChild(panel);
+    console.log('✅ Memory panel added to DOM');
 
     // Add event listeners
-    document.getElementById('close-memory-panel').onclick = () => {
-      console.log('❌ Closing panel via close button');
-      panel.remove();
-    };
+    const closeButton = document.getElementById('close-memory-panel');
+    if (closeButton) {
+        closeButton.onclick = () => {
+        console.log('❌ Closing panel via close button');
+        panel.remove();
+        };
+    }
     
     // Close panel when clicking outside
     setTimeout(() => {
-      const closeOnOutsideClick = (e) => {
-        if (!panel.contains(e.target) && !document.getElementById('claude-memory-button').contains(e.target)) {
-          console.log('❌ Closing panel via outside click');
-          panel.remove();
-          document.removeEventListener('click', closeOnOutsideClick);
+        const closeOnOutsideClick = (e) => {
+        const memoryButton = document.getElementById('claude-memory-button');
+        if (!panel.contains(e.target) && !memoryButton?.contains(e.target)) {
+            console.log('❌ Closing panel via outside click');
+            panel.remove();
+            document.removeEventListener('click', closeOnOutsideClick);
         }
-      };
-      document.addEventListener('click', closeOnOutsideClick);
+        };
+        document.addEventListener('click', closeOnOutsideClick);
     }, 100);
 
     console.log('✅ Memory panel created and displayed');
-  }
+    }
 
-  deleteTestMemory(memoryId) {
+    deleteTestMemory(memoryId) {
     console.log('🗑️ Deleting test memory:', memoryId);
     this.testMemories = this.testMemories.filter(m => m.id !== memoryId);
     
     // Refresh panel
     const panel = document.getElementById('claude-memory-panel');
     if (panel) {
-      panel.remove();
-      this.createMemoryPanel();
+        panel.remove();
+        this.createMemoryPanel();
     }
-  }
-
-  injectMemoryStyles() {
-    if (document.getElementById('claude-memory-styles')) return;
-
-    console.log('🎨 Injecting Memory button styles...');
-
-    const styles = document.createElement('style');
-    styles.id = 'claude-memory-styles';
-    styles.textContent = `
-      /* Memory Panel Styles */
-      #claude-memory-panel {
-        position: fixed;
-        right: 20px;
-        top: 80px;
-        width: 400px;
-        max-height: 600px;
-        background: rgb(var(--bg-300));
-        border: 1px solid rgb(var(--border-400));
-        border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-        z-index: 10000;
-        font-family: var(--font-family-default);
-        overflow: hidden;
-        color: rgb(var(--text-100));
-      }
-
-      .memory-panel-header {
-        padding: 16px;
-        border-bottom: 1px solid rgb(var(--border-400));
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background: rgb(var(--bg-200));
-      }
-
-      .memory-panel-header h3 {
-        margin: 0;
-        font-size: 16px;
-        font-weight: 600;
-        color: rgb(var(--text-100));
-      }
-
-      #close-memory-panel {
-        background: none;
-        border: none;
-        font-size: 20px;
-        cursor: pointer;
-        color: rgb(var(--text-300));
-        padding: 4px 8px;
-        border-radius: 6px;
-        transition: background 0.2s ease;
-      }
-
-      #close-memory-panel:hover {
-        background: rgb(var(--bg-400));
-        color: rgb(var(--text-100));
-      }
-
-      .memory-panel-content {
-        padding: 16px;
-        max-height: 500px;
-        overflow-y: auto;
-      }
-
-      .memory-stats {
-        margin-bottom: 16px;
-        padding: 12px;
-        background: rgb(var(--bg-200));
-        border-radius: 8px;
-        font-size: 14px;
-        color: rgb(var(--text-200));
-        border: 1px solid rgb(var(--border-400));
-      }
-
-      .memory-item {
-        padding: 12px;
-        margin-bottom: 8px;
-        border: 1px solid rgb(var(--border-400));
-        border-radius: 8px;
-        background: rgb(var(--bg-200));
-        transition: background 0.2s ease;
-      }
-
-      .memory-item:hover {
-        background: rgb(var(--bg-100));
-      }
-
-      .memory-category {
-        font-size: 11px;
-        color: rgb(var(--text-300));
-        text-transform: uppercase;
-        margin-bottom: 6px;
-        font-weight: 500;
-        letter-spacing: 0.5px;
-      }
-
-      .memory-content {
-        font-size: 14px;
-        color: rgb(var(--text-100));
-        margin-bottom: 10px;
-        line-height: 1.5;
-      }
-
-      .delete-btn {
-        font-size: 12px;
-        padding: 6px 12px;
-        background: #ef4444;
-        color: white;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        transition: background 0.2s ease;
-        font-weight: 500;
-      }
-
-      .delete-btn:hover {
-        background: #dc2626;
-      }
-
-      /* Ensure Memory button integrates seamlessly */
-      #claude-memory-button {
-        text-decoration: none !important;
-      }
-
-      #claude-memory-container {
-        margin: 2px 0;
-      }
-    `;
-
-    document.head.appendChild(styles);
-  }
+    }
 }
 
 // Initialize the test
